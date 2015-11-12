@@ -1,0 +1,30 @@
+{
+  "name": "html-cleaner",
+  "version": "1.0.0",
+  "description": "Clean and enhance your offline HTML files",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iancottam91/html-cleaner.git"
+  },
+  "keywords": [
+    "html",
+    "cleaner",
+    "offline"
+  ],
+  "author": "'Ian <'icottam@msn.com'>",
+  "license": "'MIT'",
+  "bugs": {
+    "url": "https://github.com/iancottam91/html-cleaner/issues"
+  },
+  "homepage": "https://github.com/iancottam91/html-cleaner",
+  "dependencies": {
+    "cheerio": "0.19.0",
+    "fs": "0.0.2",
+    "mkdirp": "0.5.1",
+    "path": "0.12.7"
+  }
+}
