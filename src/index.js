@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var getDirName = require("path").dirname
 var cheerio = require('cheerio');
+var prompt = require('prompt');
 
 var saveFile = function (filePath, elementsToDelete, stylesToAdd, callback) {
 
@@ -116,7 +117,91 @@ var cleanFiles = function(dir, elementsToDelete, stylesToAdd, callback) {
 };
 
 var promptForParameters = function(){
-  console.log('needs a directory name');
+
+  // definie the schema for console input
+  var initialSchema = {
+    properties: {
+      directory_path: {
+        required: true
+      },
+      elements_to_delete: {
+        required: true
+      }
+    }
+  };
+
+  var stylesOptionSchema = {
+    properties: {
+      add_custom_styles: {
+        pattern: /^[yes|no]+$/i,
+        message: "You must answer with yes or no"
+      }
+    }
+  }
+
+  var stylesDir = {
+    properties: {
+      custom_styles_path: {
+        required: true
+      }
+    }
+  }
+
+  var dir = "";
+  var ele = "";
+
+  var customStyles = false;
+  var customStylesPath = false;
+  var customStylesCSS = false;
+  var customFn = false;
+
+  // begin interactions
+
+  console.log('\nYou need to provide a directory with files to clean & some elements to delete!\n');
+  prompt.start();
+ 
+  // get directory and elements to delete
+  prompt.get(initialSchema, function (err, result) {
+
+    dir = result.directory_path;
+    ele = result.elements_to_delete;
+
+
+    console.log('\nThanks!\nWould you like to add some custom styles to your HTML files? (Answer Yes or No)\n');
+
+    prompt.get(stylesOptionSchema, function (err, result) {
+      console.log(result.add_custom_styles);
+      if(result.add_custom_styles.toLowerCase() === "no"){
+        console.log('ok, no custom styles then!');
+      } else {
+        customStyles = true
+        console.log('\nEnter the path to your custom stylesheet\n');
+        // get the file name for custom styles
+        prompt.get(stylesDir, function (err, result) {
+          console.log(result.custom_styles_path);
+          customStylesPath = result.custom_styles_path;
+
+          // open the file and read the styles          
+
+          fs.readFile("C:/Users/CottaI01/Documents/Projects/SearchIO/cleanjs/resources/styles.css", "utf8", function (err, data) {
+          // fs.readFile(result.custom_styles_path, function (err, data) {
+            if (err) throw err;
+            console.log(data);
+            customStylesCSS = "<style>" + data + "</style>";
+
+            cleanFiles(dir, ele, customStylesCSS, console.log('x'));
+
+          });
+
+
+        });
+
+      }
+    });
+
+  });
+
+
 }
 
 // currently we overwrite all the files

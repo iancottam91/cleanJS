@@ -1,3 +1,7 @@
-- Open the files before saving them
-- Edit them
-- Save editted content
+Command prompt:
+
+- add all steps in journey
+- add parameter for custom fn - can replace addContent:
+* should explain what parameters it expects and what it should return (in docs and cmd prompt)
+- add error handling
+- test
