@@ -3,7 +3,9 @@ var cleanFiles = require('./src/index.js');
 
 // read file from file system
 
-var dir = process.argv[2];
+// var dir = process.argv[2];
+
+var dir = "C:/Users/CottaI01/Documents/Projects/SearchIO/test-data";
 
 
 
@@ -61,7 +63,7 @@ var customManipulation = function(cheerioHTML){
 }
 
 
-cleanFiles(dir, elementsToDelete, stylesToAdd, logFileName);
+cleanFiles(dir, elementsToDelete, stylesToAdd, customManipulation, logFileName);
 
 
 // export a function called cleanFiles.customManipulation, then use this a parameter for cleanFiles?!

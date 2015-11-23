@@ -6,7 +6,7 @@ var getDirName = require("path").dirname
 var cheerio = require('cheerio');
 var prompt = require('prompt');
 
-var saveFile = function (filePath, elementsToDelete, stylesToAdd, customFunction, callback) {
+var saveFile = function (filePath, elementsToDelete, stylesToAdd, callback) {
 
 	var saveTo = filePath.split("\data")[0] + "data-new" + filePath.split("\data")[1];
 
@@ -14,32 +14,31 @@ var saveFile = function (filePath, elementsToDelete, stylesToAdd, customFunction
   
   fs.readFile(filePath, function (err, data) {
     if (err) throw err;
-    cleanedContent = cleanFile(data, elementsToDelete, stylesToAdd ,customFunction);
+    cleanedContent = cleanFile(data, elementsToDelete, stylesToAdd);
 
     // make the directory if it doesn't exist
-    mkdirp(getDirName(saveTo), function (err) {
-      if (err) return callback(err)
-      fs.writeFile(saveTo, cleanedContent, callback(saveTo));
-    });
+    // - this does nothing is the directory already exists. How do we do something if it exists?!?
+
+    // mkdirp(getDirName(saveTo), function (err) {
+    //   if (err) return callback(err)
+    //   fs.writeFile(saveTo, cleanedContent, callback(saveTo));
+    // });
+    fs.writeFile(saveTo, cleanedContent, callback(saveTo));
+
   });
 }
 
 
-var cleanFile = function(data, elementsToDelete, stylesToAdd, customFunction, callback){
+var cleanFile = function(data, elementsToDelete, stylesToAdd, callback){
 
   var $ = cheerio.load(data);
   var html = $('html');
   html.find(elementsToDelete).remove();
 
-  console.log(customFunction);
-  if(customFunction !== false){
-    html = customFunction(html);
-  }
+  html = addContent(html);
 
   // make conditional on whether parameter is passed
-  if(stylesToAdd !== false){
-    html = addStyles(html, stylesToAdd);
-  }
+  html = addStyles(html, stylesToAdd);
 
 
   return html;
@@ -79,10 +78,7 @@ var addContent = function(cheerioHTML){
 }
 
 
-// need to work on where the custom call back would come in. If at all
-
-var cleanFiles = function(dir, elementsToDelete, stylesToAdd, customFunction, callback) {
-
+var cleanFiles = function(dir, elementsToDelete, stylesToAdd, callback) {
 
   if(dir === undefined || dir === ""){
     promptForParameters()
@@ -104,18 +100,15 @@ var cleanFiles = function(dir, elementsToDelete, stylesToAdd, customFunction, ca
 
           if (stat && stat.isDirectory()) {
 
-            cleanFiles(file, elementsToDelete, stylesToAdd, customFunction, function(err, res) {
+            cleanFiles(file, elementsToDelete, stylesToAdd, function(err, res) {
               results = results.concat(res);
-              if (!--pending) {
-                console.log('Finished building results array.');
-              }
+              if (!--pending) callback(null, results);
             });
 
           } else {
 
-            // start to save the files now
             results.push(file);
-            saveFile(file, elementsToDelete, stylesToAdd, customFunction, confirmSaved);
+            saveFile(file, elementsToDelete, stylesToAdd, confirmSaved);
             if (!--pending) callback(null, results);
 
           }
@@ -158,23 +151,6 @@ var promptForParameters = function(){
     }
   }
 
-var customFnOptionSchema = {
-  properties: {
-    add_custom_fn: {
-      pattern: /^[yes|no]+$/i,
-      message: "You must answer with yes or no"
-    }
-  }
-}
-
-  var customFn = {
-    properties: {
-      custom_fn_path: {
-        required: true
-      }
-    }
-  }
-
   var dir = "";
   var ele = "";
 
@@ -200,21 +176,7 @@ var customFnOptionSchema = {
     prompt.get(stylesOptionSchema, function (err, result) {
       console.log(result.add_custom_styles);
       if(result.add_custom_styles.toLowerCase() === "no"){
-
-        // call function without custom styles
         console.log('ok, no custom styles then!');
-
-        // add custom JS function
-        console.log('\n\nWould you like to apply some custom functionality to your HTML files? (Answer Yes or No)\n');
-        prompt.get(customFnOptionSchema, function (err, result) {
-          if(result.add_custom_fn.toLowerCase() === "no"){
-            cleanFiles(dir, ele, false, false, console.log('x'));
-          }
-        });
-
-
-
-
       } else {
         customStyles = true
         console.log('\nEnter the path to your custom stylesheet\n');
@@ -222,22 +184,39 @@ var customFnOptionSchema = {
         prompt.get(stylesDir, function (err, result) {
           console.log(result.custom_styles_path);
           customStylesPath = result.custom_styles_path;
-
           // open the file and read the styles          
 
-          // fs.readFile("C:/Users/CottaI01/Documents/Projects/SearchIO/cleanjs/resources/styles.css", "utf8", function (err, data) {
-          fs.readFile(result.custom_styles_path, function (err, data) {
+           fs.readFile("C:/Users/CottaI01/Documents/Projects/SearchIO/cleanjs/resources/styles.css", "utf8", function (err, data) {
+          // fs.readFile(result.custom_styles_path, function (err, data) {
             if (err) throw err;
+            console.log(data);
             customStylesCSS = "<style>" + data + "</style>";
-
-            cleanFiles(dir, ele, customStylesCSS, false, console.log('x'));
+            cleanFiles(dir, ele, customStylesCSS, confirmSaved);
 
           });
-
-
+          
         });
-
       }
+
+      // if custom styles are defined. Read them, then clean files
+      // if(customStyles){
+        
+      //     fs.readFile("C:/Users/CottaI01/Documents/Projects/SearchIO/cleanjs/resources/styles.css", "utf8", function (err, data) {
+      //     // fs.readFile(result.custom_styles_path, function (err, data) {
+      //       if (err) throw err;
+      //       console.log(data);
+      //       customStylesCSS = "<style>" + data + "</style>";
+      //       cleanFiles(dir, ele, customStylesCSS, console.log('x'));
+
+      //     });
+      // } else{
+      //   cleanFiles(dir, ele, customStylesCSS, console.log('x'));
+      // }
+
+      // if no custom files, just clean regularly
+
+
+
     });
 
   });
@@ -248,7 +227,7 @@ var customFnOptionSchema = {
 // currently we overwrite all the files
 
 var confirmSaved = function (fileName){
-    console.log('file saved at: ' + fileName);
+    console.log('file saved at ' + fileName);
 }
 
 // module.exports = logList;
