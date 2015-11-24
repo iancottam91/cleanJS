@@ -13,11 +13,11 @@ clean.js is a simple Node.js module that allows you to process a batch of html f
 
 install through npm ny running:
 
-`npm install cleanjs`
+`npm install html-processor`
 
 require the module from your Node.js application:
 
-`var cleanFiles = require('cleanjs');
+`var cleanFiles = require('html-processor');
 cleanFiles();`
 
 cleanjs exports a function that takes 5 parameters. If you call the function without any parameters and run the above code from the command line, you will be prompted for them. Otherwise you can provide the parameters in your application:
@@ -46,7 +46,7 @@ callback:
 
 
 
-## Examples
+## Examples - download these from the git repo
 
 1. Use example.js to process the data in /test-data. To do this open a command prompt in the 'examples' directory and run:
 

@@ -1,5 +1,5 @@
 // require local module
-var cleanFiles = require('../src/index.js');
+var cleanFiles = require('html-processor');
 
 // read file from file system
 

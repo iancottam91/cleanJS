@@ -1,2 +1,2 @@
-var cleanFiles = require('./src/index.js');
+var cleanFiles = require('html-processor');
 cleanFiles();
