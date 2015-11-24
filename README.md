@@ -1,4 +1,4 @@
-# HTML-processor
+# HTML Processor
 
 ## Clean and enhance your offline HTML files
 
