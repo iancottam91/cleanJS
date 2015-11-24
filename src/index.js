@@ -209,7 +209,7 @@ var promptForParameters = function(){
             cleanFiles(dir, ele, false, false, console.log('x'));
           } else {
 
-            console.log("\nEnter the path to your custom js function. This must be a single JS file that exports a single function. The function should take one parameter 'html', which is the full HTML document and a jQuery variable. It should return the same varaible after manipulation.\n");
+            console.log("\nEnter the path to your custom js function. This must be a single JS file that exports a single function. The function should take one parameter 'html', which is the full HTML document as a jQuery variable. It should return the same varaible after manipulation.\n");
             // prompt for directory of JS funtion
             // load it
             prompt.get(customFn, function (err, result) {
