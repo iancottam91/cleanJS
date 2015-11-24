@@ -1,4 +1,4 @@
-# cleanJS
+# HTML-processor
 
 ## Clean and enhance your offline HTML files
 
