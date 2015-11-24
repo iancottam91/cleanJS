@@ -31,7 +31,6 @@ var cleanFile = function(data, elementsToDelete, stylesToAdd, customFunction, ca
   var html = $('html');
   html.find(elementsToDelete).remove();
 
-  console.log(customFunction);
   if(customFunction !== false){
     html = customFunction(html);
   }
@@ -158,14 +157,14 @@ var promptForParameters = function(){
     }
   }
 
-var customFnOptionSchema = {
-  properties: {
-    add_custom_fn: {
-      pattern: /^[yes|no]+$/i,
-      message: "You must answer with yes or no"
+  var customFnOptionSchema = {
+    properties: {
+      add_custom_fn: {
+        pattern: /^[yes|no]+$/i,
+        message: "You must answer with yes or no"
+      }
     }
   }
-}
 
   var customFn = {
     properties: {
@@ -181,7 +180,6 @@ var customFnOptionSchema = {
   var customStyles = false;
   var customStylesPath = false;
   var customStylesCSS = false;
-  var customFn = false;
 
   // begin interactions
 
@@ -209,11 +207,28 @@ var customFnOptionSchema = {
         prompt.get(customFnOptionSchema, function (err, result) {
           if(result.add_custom_fn.toLowerCase() === "no"){
             cleanFiles(dir, ele, false, false, console.log('x'));
+          } else {
+
+            console.log("\nEnter the path to your custom js function. This must be a single JS file that exports a single function. The function should take one parameter 'html', which is the full HTML document and a jQuery variable. It should return the same varaible after manipulation.\n");
+            // prompt for directory of JS funtion
+            // load it
+            prompt.get(customFn, function (err, result) {
+              console.log(result.custom_fn_path);
+              customFnPath = result.custom_fn_path;
+
+              // open the file and read the function
+              var addContent = require(customFnPath);
+              // fs.readFile(customFnPath, "utf-8", function (err, data) {
+
+              //   var addContent =  require('./tools');
+              //   console.log(addContent);
+              cleanFiles(dir, ele, false, addContent, console.log('x'));
+              // });
+            });
+
           }
+
         });
-
-
-
 
       } else {
         customStyles = true
@@ -230,7 +245,31 @@ var customFnOptionSchema = {
             if (err) throw err;
             customStylesCSS = "<style>" + data + "</style>";
 
-            cleanFiles(dir, ele, customStylesCSS, false, console.log('x'));
+            // cleanFiles(dir, ele, customStylesCSS, false, console.log('x'));
+            // add custom JS function
+            console.log('\n\nWould you like to apply some custom functionality to your HTML files? (Answer Yes or No)\n');
+
+            prompt.get(customFnOptionSchema, function (err, result) {
+              if(result.add_custom_fn.toLowerCase() === "no"){
+                cleanFiles(dir, ele, customStylesCSS, false, console.log('x'));
+              } else {
+
+                console.log("\nEnter the path to your custom js function. This must be a single JS file that exports a single function. The function should take one parameter 'html', which is the full HTML document and a jQuery variable. It should return the same varaible after manipulation.\n");
+                // prompt for directory of JS funtion
+                // load it
+                prompt.get(customFn, function (err, result) {
+                  console.log(result.custom_fn_path);
+                  customFnPath = result.custom_fn_path;
+
+                  // open the file and read the function
+                  var addContent = require(customFnPath);
+                  // clean the folder
+                  cleanFiles(dir, ele, customStylesCSS, addContent, console.log('x'));
+                  
+                });
+
+              }
+            });
 
           });
 

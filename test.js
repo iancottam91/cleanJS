@@ -41,7 +41,7 @@ var stylesToAdd = '<style>\
   </style>';
 
  // this needs to be a function that you write outside the module
-var customManipulation = function(cheerioHTML){
+var customFunction = function(cheerioHTML){
 
   // add sidebar
   var sidebarSearch = "<form id='site-search' action='#' method='get'>\
@@ -63,7 +63,7 @@ var customManipulation = function(cheerioHTML){
 }
 
 
-cleanFiles(dir, elementsToDelete, stylesToAdd, customManipulation, logFileName);
+cleanFiles(dir, elementsToDelete, stylesToAdd, customFunction, logFileName);
 
 
 // export a function called cleanFiles.customManipulation, then use this a parameter for cleanFiles?!

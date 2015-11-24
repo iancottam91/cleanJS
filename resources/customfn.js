@@ -1,11 +1,4 @@
-// this needs to be a function that you write outside the module
 
-// should be a function defined as a variable that takes one parameter:
-//
-// * cheerioHTML *
-// a jQuery object of the entire HTML document.
-//
-// must return the document
 
 var addContent = function(cheerioHTML){
 
@@ -29,3 +22,5 @@ var addContent = function(cheerioHTML){
 
   return cheerioHTML;
 }
+
+module.exports = addContent;
