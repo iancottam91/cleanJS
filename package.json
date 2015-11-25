@@ -1,6 +1,6 @@
 {
   "name": "html-processor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Clean and enhance your offline HTML files",
   "main": "src/index.js",
   "scripts": {

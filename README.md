@@ -2,7 +2,7 @@
 
 ## Clean and enhance your offline HTML files
 
-clean.js is a simple Node.js module that allows you to process a batch of html files programmatically or through the command line. clean.js will allow the following operations:
+html-processor is a simple Node.js module that allows you to process a batch of html files programmatically or through the command line. html-processor will allow the following operations:
 
 * remove elements specified by a jquery selector 
 * add custom styles
